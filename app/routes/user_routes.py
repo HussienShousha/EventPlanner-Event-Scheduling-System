@@ -11,3 +11,7 @@ async def register(user: UserCreate):
 @router.post("/login")
 async def login(user: UserLogin):
     return await user_controller.login_user(user.email, user.password)
+
+@router.get("/all")
+async def get_all_users():
+    return await user_controller.get_all_users()

@@ -31,7 +31,9 @@ SECRET_KEY=supersecretkey
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 
-
+For Khaled:
+Connect to DB:
+E:/MongoDB/bin/mongod.exe --dbpath=E:/MongoDB-Data
 
 
 Run the Backend Server:
@@ -39,6 +41,7 @@ uvicorn app.main:app --reload
 Open your browser at http://127.0.0.1:8000/docs
 to see Swagger UI and test all API endpoints.
 
-
-
-
+Run frontend:
+cd react-app
+npm run dev
+Open your browser at http://localhost:5173/
