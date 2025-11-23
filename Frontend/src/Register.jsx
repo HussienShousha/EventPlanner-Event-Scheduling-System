@@ -26,7 +26,6 @@ function Register() {
       }
 
       alert("Register successful!");
-
       window.location.href = "public/html/allUsers.html";
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -35,30 +34,36 @@ function Register() {
   };
 
   return (
-    <>
-      <h2>Register</h2>
+    <div className="container">
+      <h2>Create Account</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Full name"
           value={full_name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <button type="submit">Send</button>
+        <button type="submit">Register</button>
       </form>
-    </>
+      <p className="links">
+        Already have an account? <a href="public/html/login.html">Login</a>
+      </p>
+    </div>
   );
 }
 

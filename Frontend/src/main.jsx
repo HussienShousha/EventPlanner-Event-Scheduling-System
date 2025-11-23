@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
 import AllUsers from './GetAllUsers.jsx';
-
+import './styles.css';
 // Register page
 const registerRoot = document.getElementById('register');
 if (registerRoot) {
