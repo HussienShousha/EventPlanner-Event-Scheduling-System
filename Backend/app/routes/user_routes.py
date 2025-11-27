@@ -1,0 +1,17 @@
+from fastapi import APIRouter
+from app.controllers import user_controller
+from app.schemas.user_schema import UserCreate, UserLogin
+
+router = APIRouter(prefix="/users", tags=["Users"])
+
+@router.post("/Sign Up")
+async def signUp(user: UserCreate):
+    return await user_controller.register_user(user)
+
+@router.post("/login")
+async def login(user: UserLogin):
+    return await user_controller.login_user(user.email, user.password)
+
+@router.get("/all")
+async def get_all_users():
+    return await user_controller.get_all_users()
