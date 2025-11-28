@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
-import {CreateEvent, ShowEvents, ShowInvitations, InviteUser} from './events.jsx';
+import {CreateEvent, ShowEvents, ShowInvitations, InviteUser, ShowInvitedUser} from './events.jsx';
 import './styles.css';
 
 // Register page
@@ -58,6 +58,15 @@ if (inviteUserRoot) {
   createRoot(inviteUserRoot).render(
     <StrictMode>
       <InviteUser />
+    </StrictMode>
+  );
+}
+
+const showInvitedUserRoot = document.getElementById('ShowInvitedUser');
+if (showInvitedUserRoot) {
+  createRoot(showInvitedUserRoot).render(
+    <StrictMode>
+      <ShowInvitedUser />
     </StrictMode>
   );
 }

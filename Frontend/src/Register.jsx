@@ -30,7 +30,7 @@ function Register() {
 
       alert("Register successful!");
 
-      window.location.href = "public/html/events.html";
+      window.location.href = "public/html/login.html";
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Something went wrong while Registering!");

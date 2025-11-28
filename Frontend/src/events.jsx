@@ -165,7 +165,7 @@ export function ShowEvents() {
       {events.length === 0 ? (
         <p>{message || "No events currently"}</p>
       ) : (
-        <ul>
+        <ul style={{ overflow: "scroll", height: "175px" }}>
           {events.map((event, index) => (
             <li key={index}>
               <h3>{event.title}</h3>
@@ -185,13 +185,16 @@ export function ShowEvents() {
 export function ShowInvitations() {
   const [invitations, setInvitations] = useState([]);
   const [message, setMessage] = useState("");
-  const [role, setRole] = useState("attendee"); 
+  const [role, setRole] = useState("attendee");
+
+  // Store selected status for each invitation by title
+  const [selectedStatus, setSelectedStatus] = useState({});
 
   useEffect(() => {
     const fetchInvitations = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/events/invitations/${role}`, 
+          `http://127.0.0.1:8000/events/invitations/${role}`,
           {
             method: "GET",
             headers: {
@@ -206,6 +209,13 @@ export function ShowInvitations() {
         if (Array.isArray(data)) {
           setInvitations(data);
           setMessage("");
+
+          // Initialize status selections
+          const statusMap = {};
+          data.forEach((inv) => {
+            statusMap[inv.event_title] = "Going";
+          });
+          setSelectedStatus(statusMap);
         } else if (data.message) {
           setInvitations([]);
           setMessage(data.message);
@@ -223,10 +233,12 @@ export function ShowInvitations() {
     fetchInvitations();
   }, [role]);
 
-  const handleAccept = async (eventTitle) => {
+  const handleSubmit = async (eventTitle) => {
+    const status = selectedStatus[eventTitle];
+
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/events/invitation/${eventTitle}/${role}/Going`,
+        `http://127.0.0.1:8000/events/invitation/${eventTitle}/${role}/${status}`,
         {
           method: "PUT",
           headers: {
@@ -240,20 +252,22 @@ export function ShowInvitations() {
 
       if (data.message) {
         alert(data.message);
-        setInvitations((prevInvitations) =>
-          prevInvitations.filter((inv) => inv.event_title !== eventTitle)
+
+        // Remove accepted invitation
+        setInvitations((prev) =>
+          prev.filter((inv) => inv.event_title !== eventTitle)
         );
       }
     } catch (error) {
-      console.error("Error accepting invitation:", error);
-      alert("Failed to accept invitation");
+      console.error("Error submitting invitation:", error);
+      alert("Failed to update invitation status");
     }
   };
 
   return (
     <div className="container">
       <h2>Your Invitations</h2>
-      
+
       <div style={{ marginBottom: "1rem" }}>
         <label htmlFor="roleSelect">Select role: </label>
         <select
@@ -270,11 +284,32 @@ export function ShowInvitations() {
         <p>{message || "No invitations currently"}</p>
       ) : (
         <ol>
-          {invitations.map((invitation, index) => (
+          {invitations.map((inv, index) => (
             <li key={index} style={{ marginBottom: "1rem" }}>
-              <h3>{invitation.event_title}</h3>
+              <div>
+                <h3>{inv.event_title}</h3>
+                <p>Status: {inv.status}</p>
+              </div>
+
+              {/* Status selector */}
+              <select
+                value={selectedStatus[inv.event_title]}
+                onChange={(e) =>
+                  setSelectedStatus((prev) => ({
+                    ...prev,
+                    [inv.event_title]: e.target.value,
+                  }))
+                }
+                style={{ marginRight: "0.5rem" }}
+              >
+                <option value="Going">Going</option>
+                <option value="Maybe">Maybe</option>
+                <option value="Not Going">Not Going</option>
+              </select>
+
+              {/* Submit button */}
               <button
-                onClick={() => handleAccept(invitation.event_title)}
+                onClick={() => handleSubmit(inv.event_title)}
                 style={{
                   padding: "5px 10px",
                   cursor: "pointer",
@@ -284,8 +319,9 @@ export function ShowInvitations() {
                   border: "none",
                 }}
               >
-                Accept
+                Submit
               </button>
+              <hr />
             </li>
           ))}
         </ol>
@@ -394,6 +430,119 @@ export function InviteUser() {
       </button>
 
       {message && <p style={{ marginTop: "15px", color: "blue" }}>{message}</p>}
+    </div>
+  );
+}
+
+export function ShowInvitedUser() {
+  const [eventTitle, setEventTitle] = useState("");
+  const [invitations, setInvitations] = useState([]);
+  const [message, setMessage] = useState("");
+
+  const fetchInvitedUsers = async () => {
+    if (!eventTitle.trim()) {
+      setMessage("Please enter an event title");
+      setInvitations([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/events/invited/${eventTitle}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          mode: "cors",
+        }
+      );
+
+      const data = await response.json();
+
+      const mergedUsers = [
+        ...(data.invited_attendees || []).map((u) => ({
+          email: u.email,
+          status: u.status,
+          role: "Invited Attendee",
+        })),
+        ...(data.invited_collaborators || []).map((u) => ({
+          email: u.email,
+          status: u.status,
+          role: "Invited Collaborator",
+        })),
+        ...(data.actual_attendees || []).map((u) => ({
+          email: u.email,
+          status: "Going",
+          role: "Actual Attendee",
+        })),
+        ...(data.actual_collaborators || []).map((u) => ({
+          email: u.email,
+          status: "Going",
+          role: "Actual Collaborator",
+        })),
+      ];
+
+      if (mergedUsers.length > 0) {
+        setInvitations(mergedUsers);
+        setMessage("");
+      } else {
+        setInvitations([]);
+        setMessage("No invited users found for this event");
+      }
+    } catch (error) {
+      console.error("Error fetching invited users:", error);
+      setInvitations([]);
+      setMessage("Failed to fetch invited users");
+    }
+  };
+
+  return (
+    <div className="container">
+      <h2>Invited Users</h2>
+
+      <div style={{ marginBottom: "1rem" }}>
+        <input
+          type="text"
+          placeholder="Enter event title"
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          style={{
+            padding: "8px",
+            marginRight: "10px",
+            width: "250px",
+          }}
+        />
+
+        <button
+          onClick={fetchInvitedUsers}
+          style={{
+            padding: "8px 15px",
+            cursor: "pointer",
+            borderRadius: "5px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+          }}
+        >
+          Search
+        </button>
+      </div>
+
+      {message && <p>{message}</p>}
+
+      {invitations.length > 0 && (
+        <ol>
+          {invitations.map((inv, index) => (
+            <li key={index}>
+              <p>Email: {inv.email}</p>
+              <p>Status: {inv.status}</p>
+              <p>Role: {inv.role}</p>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }
