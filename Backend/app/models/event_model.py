@@ -1,19 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
-from datetime import datetime
-
-
-
 
 class Invitation(BaseModel):
     email: EmailStr
     status: str = "Not Going"
 
 class EventModel(BaseModel):
-
    id: Optional[str]
    title: str
-   date: datetime
+   date: str
    time: str
    location: str
    description: str

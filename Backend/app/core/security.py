@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, status, Security
 from fastapi.security import APIKeyHeader
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from app.core.config import settings
@@ -16,14 +17,13 @@ def verify_password(plain, hashed) -> bool:
 
 api_key_header = APIKeyHeader(name="Authorization")
 
-def create_access_token(data: dict, expires_minutes: int = None):
+def create_access_token(data: dict, expires_minutes: Optional[int] = None):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(
         minutes=expires_minutes or settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-
 
 def authentication(token: str = Security(api_key_header)):
     if not token.startswith("Bearer "):
@@ -40,8 +40,6 @@ def authentication(token: str = Security(api_key_header)):
         raise HTTPException(401, "Invalid token")
 
     return {"email": email}
-
-
 
 
 async def is_authorized_user_to_event(event_title: str, user_email: str):

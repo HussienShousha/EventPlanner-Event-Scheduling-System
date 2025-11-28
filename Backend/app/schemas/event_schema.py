@@ -1,10 +1,8 @@
 from pydantic import BaseModel
-from typing import List, Optional
-from datetime import datetime
 
 class EventCreate(BaseModel):
     title: str
-    date: datetime
+    date: str
     time: str
     location: str
     description: str

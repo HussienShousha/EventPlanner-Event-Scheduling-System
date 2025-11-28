@@ -24,9 +24,12 @@ function Login() {
         return;
       }
 
+      localStorage.setItem("email", email);
+      localStorage.setItem("token", data.access_token);
+
       alert("Login successful!");
 
-      window.location.href = "allUsers.html";
+      window.location.href = "events.html";
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Something went wrong while logging in!");
@@ -34,7 +37,7 @@ function Login() {
   };
 
   return (
-    <>
+    <div className="container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -51,7 +54,10 @@ function Login() {
         />
         <button type="submit">Login</button>
       </form>
-    </>
+      <p className="links">
+        Don't have an account? <a href="../../index.html">Register</a>
+      </p>
+    </div>
   );
 }
 
