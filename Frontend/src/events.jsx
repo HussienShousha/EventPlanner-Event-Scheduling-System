@@ -97,15 +97,13 @@ export function ShowEvents() {
         url += `?${encodeURIComponent(queryField)}=${encodeURIComponent(queryValue)}`;
       }
 
-      console.log('url :>> ', url);
-
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        mode: 'cors'
+        mode: "cors",
       });
 
       const data = await response.json();
@@ -132,8 +130,38 @@ export function ShowEvents() {
   }, []);
 
   const handleSearch = () => {
-    if (!filterValue.trim()) return; 
+    if (!filterValue.trim()) return;
     fetchEvents(filterField, filterValue);
+  };
+
+  const handleDelete = async (title) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/events/delete/${encodeURIComponent(title)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          mode: "cors",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Could not delete event");
+        return;
+      }
+
+      alert("Event deleted successfully");
+
+      setEvents((prev) => prev.filter((e) => e.title !== title));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Error deleting event");
+    }
   };
 
   return (
@@ -165,15 +193,30 @@ export function ShowEvents() {
       {events.length === 0 ? (
         <p>{message || "No events currently"}</p>
       ) : (
-        <ul style={{ overflow: "scroll", height: "175px" }}>
+        <ul style={{ overflowY: "scroll", height: "175px" }}>
           {events.map((event, index) => (
-            <li key={index}>
+            <li key={index} style={{ marginBottom: "1rem" }}>
               <h3>{event.title}</h3>
               <p>{event.description}</p>
               <p>Location: {event.location}</p>
               <p>
                 {event.date} at {event.time}
               </p>
+
+              <button
+                onClick={() => handleDelete(event.title)}
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  borderRadius: "4px",
+                  marginTop: "0.5rem",
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
@@ -181,6 +224,7 @@ export function ShowEvents() {
     </div>
   );
 }
+
 
 export function ShowInvitations() {
   const [invitations, setInvitations] = useState([]);
@@ -210,7 +254,6 @@ export function ShowInvitations() {
           setInvitations(data);
           setMessage("");
 
-          // Initialize status selections
           const statusMap = {};
           data.forEach((inv) => {
             statusMap[inv.event_title] = "Going";
@@ -253,7 +296,6 @@ export function ShowInvitations() {
       if (data.message) {
         alert(data.message);
 
-        // Remove accepted invitation
         setInvitations((prev) =>
           prev.filter((inv) => inv.event_title !== eventTitle)
         );
@@ -291,7 +333,6 @@ export function ShowInvitations() {
                 <p>Status: {inv.status}</p>
               </div>
 
-              {/* Status selector */}
               <select
                 value={selectedStatus[inv.event_title]}
                 onChange={(e) =>
@@ -307,7 +348,6 @@ export function ShowInvitations() {
                 <option value="Not Going">Not Going</option>
               </select>
 
-              {/* Submit button */}
               <button
                 onClick={() => handleSubmit(inv.event_title)}
                 style={{
