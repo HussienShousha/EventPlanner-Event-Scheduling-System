@@ -40,6 +40,6 @@ Open your browser at http://127.0.0.1:8000/docs
 to see Swagger UI and test all API endpoints.
 
 Run frontend:
-cd react-app
+cd Frontend
 npm run dev
 Open your browser at http://localhost:5173/

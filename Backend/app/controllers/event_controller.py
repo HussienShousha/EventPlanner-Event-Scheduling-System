@@ -24,49 +24,55 @@ async def create_event(event_data, organizer_email):
     }
 
 
-async def get_my_events(
-    organizer_email: str,
-    keyword: str | None,
-    date: str | None,
-    role: str | None
-):
-    query = {}
-
-    if role == "organizer":
-        query["organizer"] = organizer_email
-
-    elif role == "attendee":
-        query["attendees.email"] = organizer_email
-
-    elif role == "collaborator":
-        query["collaborators.email"] = organizer_email
-
-    if keyword:
-        query["$or"] = [
-            {"title": {"$regex": keyword, "$options": "i"}},
-            {"description": {"$regex": keyword, "$options": "i"}}
-        ]
-
-    if date:
-        target_date = datetime.fromisoformat(date)
-        next_day = target_date + timedelta(days=1)
-
-        query["date"] = {
-            "$gte": target_date,
-            "$lt": next_day
-        }
-
-    events_cursor = db.events.find(query)
-
+async def get_my_events(user_email: str, keyword: str | None = None, date: str | None = None, role: str | None = None):
     events = []
-    async for event in events_cursor:
+
+    organizer_cursor = db.events.find({"organizer": user_email})
+    async for event in organizer_cursor:
         event["_id"] = str(event["_id"])
         events.append(event)
 
-    if not events:
-        return {"message": "No events matched your filters."}
+    attendee_cursor = db.events.find({"attendees.email": user_email})
+    async for event in attendee_cursor:
+        event["_id"] = str(event["_id"])
+        if event["_id"] not in [e["_id"] for e in events]:
+            events.append(event)
 
-    return events
+    collaborator_cursor = db.events.find({"collaborators.email": user_email})
+    async for event in collaborator_cursor:
+        event["_id"] = str(event["_id"])
+        if event["_id"] not in [e["_id"] for e in events]:
+            events.append(event)
+
+
+    def matches(event):
+        
+        if role:
+            if role == "organizer" and event["organizer"] != user_email:
+                return False
+            if role == "attendee" and not any(a["email"] == user_email for a in event.get("attendees", [])):
+                return False
+            if role == "collaborator" and not any(c["email"] == user_email for c in event.get("collaborators", [])):
+                return False
+
+        
+        if keyword:
+            if keyword.lower() not in event.get("title", "").lower() and keyword.lower() not in event.get("description", "").lower():
+                return False
+
+       
+        if date:
+            if date not in event.get("date", ""):
+                return False
+
+        return True
+
+    filtered_events = [e for e in events if matches(e)]
+
+    if not filtered_events:
+        return {"message": "You do not have any events yet. Create one now!"}
+
+    return filtered_events
 
 
 async def invite_user_to_event(event_title, organizer_email, invited_email, role: str):
@@ -218,6 +224,8 @@ async def get_event_invitation_status(event_title, organizer_email):
 
     event = await db.events.find_one({"title": event_title, "organizer": organizer_email})
    
+    if not event:
+        return {"message": "Event not found."}
 
     invited_attendees = event.get("invited_attendees", [])
     invited_collaborators = event.get("invited_collaborators", [])

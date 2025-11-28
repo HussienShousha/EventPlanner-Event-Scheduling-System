@@ -4,7 +4,7 @@ from app.schemas.user_schema import UserCreate, UserLogin
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("/Sign Up")
+@router.post("/register")
 async def signUp(user: UserCreate):
     return await user_controller.register_user(user)
 

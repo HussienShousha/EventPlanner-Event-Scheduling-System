@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from app.controllers import event_controller
 from app.schemas.event_schema import EventCreate, EventInvite
 from app.core.security import authentication
@@ -9,15 +9,16 @@ async def create_event(
     event_details: EventCreate,
     authenticated_user: dict = Depends(authentication)
 ):
-
+    print("Authenticated user:", authenticated_user)
     return await event_controller.create_event(event_details, authenticated_user["email"])
+
 
 @router.get("/view")
 async def view_your_events(
     authenticated_user: dict = Depends(authentication),
-    keyword: str | None = None,
-    date: str | None = None,
-    role: str | None = None
+    keyword: str | None = Query(None),
+    date: str | None = Query(None),
+    role: str | None = Query(None)
 ):
     return await event_controller.get_my_events(
         authenticated_user["email"],
