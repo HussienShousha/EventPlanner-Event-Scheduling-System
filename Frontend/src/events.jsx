@@ -136,6 +136,36 @@ export function ShowEvents() {
     fetchEvents(filterField, filterValue);
   };
 
+    const handleDelete = async (title) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/events/delete/${encodeURIComponent(title)}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          mode: "cors",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Could not delete event");
+        return;
+      }
+
+      alert("Event deleted successfully");
+
+      setEvents((prev) => prev.filter((e) => e.title !== title));
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Error deleting event");
+    }
+  };
+
   return (
     <div className="container">
       <h2>Your Events</h2>
@@ -174,6 +204,20 @@ export function ShowEvents() {
               <p>
                 {event.date} at {event.time}
               </p>
+                  <button
+                onClick={() => handleDelete(event.title)}
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  borderRadius: "4px",
+                  marginTop: "0.5rem",
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

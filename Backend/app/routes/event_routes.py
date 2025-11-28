@@ -71,3 +71,22 @@ async def organizer_view_status(
         event_title,
         authenticated_user["email"]
     )
+
+
+@router.delete("/delete/{event_title}")
+async def delete_event_route(
+    event_title: str,
+    authenticated_user: dict = Depends(authentication)  # Organizer email
+):
+    
+    result = await event_controller.delete_event(event_title, authenticated_user["email"])
+
+    
+    if "Event does not exist." in result["message"]:
+        raise HTTPException(status_code=404, detail=result["message"])
+    elif "not authorized" in result["message"]:
+        raise HTTPException(status_code=403, detail=result["message"])
+    elif "could not be deleted" in result["message"]:
+        raise HTTPException(status_code=500, detail=result["message"])
+
+    return result
