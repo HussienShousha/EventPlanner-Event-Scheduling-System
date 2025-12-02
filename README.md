@@ -1,4 +1,4 @@
-There are Dockerfiles in this repo for the Backend, Database, and Frontend (later).
+There are Dockerfiles in this repo for the Backend, Database, and Frontend (later) in each folder.
 However, there are images for the Backend, Database, and Frontend (later):
 
 Backend image: https://hub.docker.com/r/hussienshousha/eventplanner_backend 
