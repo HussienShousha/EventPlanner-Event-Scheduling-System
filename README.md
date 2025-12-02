@@ -25,4 +25,6 @@ There are a bunch of commands you should use when you download these images:
 - Run Backend Container: sudo docker run -d  --name eventplanner_backend_container  --network backend_database_network \ 
   -p 8080:8080   hussienshousha/eventplanner_backend:1.0
 
+- after that open any browser and write: http://localhost:8000/docs
+
 
