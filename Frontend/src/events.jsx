@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import {NavMenu} from "./NavMenu.jsx";
+
 export function CreateEvent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -38,49 +40,52 @@ export function CreateEvent() {
   };
 
   return (
-    <div className="container">
-      <h2>Hello {localStorage.getItem("email")}</h2>
-      <hr />
-      <h2>Create an event</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />
-        <input
-          type="date"
-          placeholder="Date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          required
-        />
-        <button type="submit">Create</button>
-      </form>
-    </div>
+    <>
+      <NavMenu />
+      <div className="container">
+        <h2>Hello {localStorage.getItem("email")}</h2>
+        <hr />
+        <h2>Create an event</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
+          <input
+            type="date"
+            placeholder="Date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            required
+          />
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -165,65 +170,67 @@ export function ShowEvents() {
   };
 
   return (
-    <div className="container">
-      <h2>Your Events</h2>
+    <>
+      <NavMenu />
+      <div className="container">
+        <h2>Your Events</h2>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <select
-          value={filterField}
-          onChange={(e) => setFilterField(e.target.value)}
-          style={{ marginRight: "0.5rem" }}
-        >
-          <option value="keyword">Keyword</option>
-          <option value="date">Date</option>
-          <option value="role">Role</option>
-        </select>
+        <div style={{ marginBottom: "1rem" }}>
+          <select
+            value={filterField}
+            onChange={(e) => setFilterField(e.target.value)}
+            style={{ marginRight: "0.5rem" }}
+          >
+            <option value="keyword">Keyword</option>
+            <option value="date">Date</option>
+            <option value="role">Role</option>
+          </select>
 
-        <input
-          type="text"
-          placeholder="Enter search value"
-          value={filterValue}
-          onChange={(e) => setFilterValue(e.target.value)}
-          style={{ marginRight: "0.5rem" }}
-        />
+          <input
+            type="text"
+            placeholder="Enter search value"
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+            style={{ marginRight: "0.5rem" }}
+          />
 
-        <button onClick={handleSearch}>Search</button>
+          <button onClick={handleSearch}>Search</button>
+        </div>
+
+        {events.length === 0 ? (
+          <p>{message || "No events currently"}</p>
+        ) : (
+          <ul style={{ overflowY: "scroll", height: "175px" }}>
+            {events.map((event, index) => (
+              <li key={index} style={{ marginBottom: "1rem" }}>
+                <h3>{event.title}</h3>
+                <p>{event.description}</p>
+                <p>Location: {event.location}</p>
+                <p>
+                  {event.date} at {event.time}
+                </p>
+                    <button
+                  onClick={() => handleDelete(event.title)}
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-
-      {events.length === 0 ? (
-        <p>{message || "No events currently"}</p>
-      ) : (
-        <ul style={{ overflowY: "scroll", height: "175px" }}>
-          {events.map((event, index) => (
-            <li key={index} style={{ marginBottom: "1rem" }}>
-              <h3>{event.title}</h3>
-              <p>{event.description}</p>
-              <p>Location: {event.location}</p>
-              <p>
-                {event.date} at {event.time}
-              </p>
-                  <button
-                onClick={() => handleDelete(event.title)}
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  padding: "5px 10px",
-                  cursor: "pointer",
-                  borderRadius: "4px",
-                  marginTop: "0.5rem",
-                }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    </>
   );
 }
-
 
 export function ShowInvitations() {
   const [invitations, setInvitations] = useState([]);
@@ -306,66 +313,69 @@ export function ShowInvitations() {
   };
 
   return (
-    <div className="container">
-      <h2>Your Invitations</h2>
+    <>
+      <NavMenu />
+      <div className="container">
+        <h2>Your Invitations</h2>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="roleSelect">Select role: </label>
-        <select
-          id="roleSelect"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="attendee">Attendee</option>
-          <option value="collaborator">Collaborator</option>
-        </select>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="roleSelect">Select role: </label>
+          <select
+            id="roleSelect"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="attendee">Attendee</option>
+            <option value="collaborator">Collaborator</option>
+          </select>
+        </div>
+
+        {invitations.length === 0 ? (
+          <p>{message || "No invitations currently"}</p>
+        ) : (
+          <ol>
+            {invitations.map((inv, index) => (
+              <li key={index} style={{ marginBottom: "1rem" }}>
+                <div>
+                  <h3>{inv.event_title}</h3>
+                  <p>Status: {inv.status}</p>
+                </div>
+
+                <select
+                  value={selectedStatus[inv.event_title]}
+                  onChange={(e) =>
+                    setSelectedStatus((prev) => ({
+                      ...prev,
+                      [inv.event_title]: e.target.value,
+                    }))
+                  }
+                  style={{ marginRight: "0.5rem" }}
+                >
+                  <option value="Going">Going</option>
+                  <option value="Maybe">Maybe</option>
+                  <option value="Not Going">Not Going</option>
+                </select>
+
+                <button
+                  onClick={() => handleSubmit(inv.event_title)}
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                    backgroundColor: "#4CAF50",
+                    color: "#fff",
+                    border: "none",
+                  }}
+                >
+                  Submit
+                </button>
+                <hr />
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
-
-      {invitations.length === 0 ? (
-        <p>{message || "No invitations currently"}</p>
-      ) : (
-        <ol>
-          {invitations.map((inv, index) => (
-            <li key={index} style={{ marginBottom: "1rem" }}>
-              <div>
-                <h3>{inv.event_title}</h3>
-                <p>Status: {inv.status}</p>
-              </div>
-
-              <select
-                value={selectedStatus[inv.event_title]}
-                onChange={(e) =>
-                  setSelectedStatus((prev) => ({
-                    ...prev,
-                    [inv.event_title]: e.target.value,
-                  }))
-                }
-                style={{ marginRight: "0.5rem" }}
-              >
-                <option value="Going">Going</option>
-                <option value="Maybe">Maybe</option>
-                <option value="Not Going">Not Going</option>
-              </select>
-
-              <button
-                onClick={() => handleSubmit(inv.event_title)}
-                style={{
-                  padding: "5px 10px",
-                  cursor: "pointer",
-                  borderRadius: "5px",
-                  backgroundColor: "#4CAF50",
-                  color: "#fff",
-                  border: "none",
-                }}
-              >
-                Submit
-              </button>
-              <hr />
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
+    </>
   );
 }
 
@@ -408,68 +418,71 @@ export function InviteUser() {
   };
 
   return (
-    <div
-      className="container"
-      style={{
-        maxWidth: "400px",
-        margin: "20px auto",
-        padding: "20px",
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-      }}
-    >
-      <h2>Invite a User</h2>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Event Title:</label>
-        <input
-          type="text"
-          value={eventTitle}
-          onChange={(e) => setEventTitle(e.target.value)}
-          placeholder="Enter event title"
-          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-        />
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter user's email"
-          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-        />
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Role:</label>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-        >
-          <option value="attendee">Attendee</option>
-          <option value="collaborator">Collaborator</option>
-        </select>
-      </div>
-
-      <button
-        onClick={handleInvite}
+    <>
+      <NavMenu />
+      <div
+        className="container"
         style={{
-          padding: "10px 20px",
-          cursor: "pointer",
-          borderRadius: "5px",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
+          maxWidth: "400px",
+          margin: "20px auto",
+          padding: "20px",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
         }}
       >
-        Send Invitation
-      </button>
+        <h2>Invite a User</h2>
 
-      {message && <p style={{ marginTop: "15px", color: "blue" }}>{message}</p>}
-    </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>Event Title:</label>
+          <input
+            type="text"
+            value={eventTitle}
+            onChange={(e) => setEventTitle(e.target.value)}
+            placeholder="Enter event title"
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "10px" }}>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter user's email"
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "10px" }}>
+          <label>Role:</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+          >
+            <option value="attendee">Attendee</option>
+            <option value="collaborator">Collaborator</option>
+          </select>
+        </div>
+
+        <button
+          onClick={handleInvite}
+          style={{
+            padding: "10px 20px",
+            cursor: "pointer",
+            borderRadius: "5px",
+            backgroundColor: "#4CAF50",
+            color: "#fff",
+            border: "none",
+          }}
+        >
+          Send Invitation
+        </button>
+
+        {message && <p style={{ marginTop: "15px", color: "blue" }}>{message}</p>}
+      </div>
+    </>
   );
 }
 
@@ -538,50 +551,53 @@ export function ShowInvitedUser() {
   };
 
   return (
-    <div className="container">
-      <h2>Invited Users</h2>
+    <>
+      <NavMenu />
+      <div className="container">
+        <h2>Invited Users</h2>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <input
-          type="text"
-          placeholder="Enter event title"
-          value={eventTitle}
-          onChange={(e) => setEventTitle(e.target.value)}
-          style={{
-            padding: "8px",
-            marginRight: "10px",
-            width: "250px",
-          }}
-        />
+        <div style={{ marginBottom: "1rem" }}>
+          <input
+            type="text"
+            placeholder="Enter event title"
+            value={eventTitle}
+            onChange={(e) => setEventTitle(e.target.value)}
+            style={{
+              padding: "8px",
+              marginRight: "10px",
+              width: "250px",
+            }}
+          />
 
-        <button
-          onClick={fetchInvitedUsers}
-          style={{
-            padding: "8px 15px",
-            cursor: "pointer",
-            borderRadius: "5px",
-            backgroundColor: "#007BFF",
-            color: "#fff",
-            border: "none",
-          }}
-        >
-          Search
-        </button>
+          <button
+            onClick={fetchInvitedUsers}
+            style={{
+              padding: "8px 15px",
+              cursor: "pointer",
+              borderRadius: "5px",
+              backgroundColor: "#007BFF",
+              color: "#fff",
+              border: "none",
+            }}
+          >
+            Search
+          </button>
+        </div>
+
+        {message && <p>{message}</p>}
+
+        {invitations.length > 0 && (
+          <ol>
+            {invitations.map((inv, index) => (
+              <li key={index}>
+                <p>Email: {inv.email}</p>
+                <p>Status: {inv.status}</p>
+                <p>Role: {inv.role}</p>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
-
-      {message && <p>{message}</p>}
-
-      {invitations.length > 0 && (
-        <ol>
-          {invitations.map((inv, index) => (
-            <li key={index}>
-              <p>Email: {inv.email}</p>
-              <p>Status: {inv.status}</p>
-              <p>Role: {inv.role}</p>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
+    </>
   );
 }

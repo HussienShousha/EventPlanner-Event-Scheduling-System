@@ -30,7 +30,7 @@ function Register() {
 
       alert("Register successful!");
 
-      window.location.href = "public/html/login.html";
+      window.location.href = "/login";
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Something went wrong while Registering!");
@@ -65,7 +65,7 @@ function Register() {
         <button type="submit">Register</button>
       </form>
       <p className="links">
-        Already have an account? <a href="./public/html/login.html">Login</a>
+        Already have an account? <a href="/login">Login</a>
       </p>
     </div>
   );

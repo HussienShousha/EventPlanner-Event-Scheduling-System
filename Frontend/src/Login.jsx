@@ -29,7 +29,7 @@ function Login() {
 
       alert("Login successful!");
 
-      window.location.href = "events.html";
+      window.location.href = "/events";
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Something went wrong while logging in!");
@@ -55,7 +55,7 @@ function Login() {
         <button type="submit">Login</button>
       </form>
       <p className="links">
-        Don't have an account? <a href="../../index.html">Register</a>
+        Don't have an account? <a href="/">Register</a>
       </p>
     </div>
   );
