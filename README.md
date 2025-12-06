@@ -17,28 +17,18 @@ There are a bunch of commands you should use when you download these images:
 
 - Create custom network between backend and database: sudo docker network create backend_database_network
 
+- Create custom network between backend and frontend: sudo docker network create backend_frontend_network
+
 - Create a Persistent Volume for MongoDB: sudo docker volume create mongo_data_volume
 
-- Run MongoDB Container: sudo docker run -d \
-  --name eventplanner_database_container \  
-  --network backend_database_network \  
-  -v mongo_data_volume:/data/db \
-  hussienshousha/eventplanner_database:1.0
+- Run MongoDB Container: sudo docker run -d --name eventplanner_database_container --network backend_database_network -v mongo_data_volume:/data/db hussienshousha/eventplanner_database:1.0
 
-- Run Backend Container: sudo docker run -d \
-  --name eventplanner_backend_container \
-  --network backend_database_network \
-  -p 8000:8080 \
-  -e MONGO_URI="mongodb://eventplanner_database_container:27017/EventPlannerDB" \
-  -e SECRET_KEY="supersecretkey" \
-  -e ALGORITHM="HS256" \
-  -e ACCESS_TOKEN_EXPIRE_MINUTES=60 \
-  hussienshousha/eventplanner_backend:1.0
+- Run Backend Container: sudo docker run -d --name eventplanner_backend_container --network backend_database_network -p  8000:8080 hussienshousha/eventplanner_backend:1.0
 
-- Run Frontend Container: sudo docker run -d \
-  --name eventplanner_frontend_container \
-  -p 3000:80 \
-  eventplanner_frontend:1.0
+- Connect backend to frontend network: sudo docker network connect backend_frontend_network eventplanner_backend_container
+
+- Run Frontend Container: sudo docker run -d --name eventplanner_frontend_container -p 3000:80 --network backend_frontend_network khaledahmed05/eventplanner_frontend:1.0
 
 
-- after that open any browser and write: http://localhost:8080/docs
+- after that open any browser and write to access swagger UI: http://localhost:8080/docs
+- if you want to view frontend write that in any browser: http://localhost:3000
