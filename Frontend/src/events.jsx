@@ -134,7 +134,7 @@ export function ShowEvents() {
     fetchEvents(filterField, filterValue);
   };
 
-  const handleDelete = async (title) => {
+    const handleDelete = async (title) => {
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/events/delete/${encodeURIComponent(title)}`,
@@ -202,8 +202,7 @@ export function ShowEvents() {
               <p>
                 {event.date} at {event.time}
               </p>
-
-              <button
+                  <button
                 onClick={() => handleDelete(event.title)}
                 style={{
                   backgroundColor: "red",

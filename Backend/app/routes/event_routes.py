@@ -72,6 +72,7 @@ async def organizer_view_status(
         authenticated_user["email"]
     )
 
+
 @router.delete("/delete/{event_title}")
 async def delete_event_route(
     event_title: str,
