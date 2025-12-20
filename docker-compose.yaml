@@ -1,0 +1,82 @@
+version: "3.8"
+
+
+services:
+
+
+    database:
+
+      image: hussienshousha/eventplanner_database:1.0
+      
+      container_name: eventplanner_database_container
+
+      environment: 
+        MONGO_INITDB_DATABASE: EventPlannerDB
+
+      volumes:
+        - mongo_data_volume:/data/db
+
+      networks:
+        - backend_database_network
+
+      ports:
+        - "27017:27017"
+    
+    
+
+    backend:
+      
+      image: hussienshousha/eventplanner_backend:1.0
+      
+      container_name: eventplanner_backend_container
+
+
+      environment:
+        
+        MONGO_URI: mongodb://database:27017/EventPlannerDB
+        SECRET_KEY: supersecretkey
+        ALGORITHM: HS256
+        ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+
+
+      depends_on:
+        - database
+
+      networks:
+        
+        - backend_database_network 
+        - backend_frontend_network
+            
+      ports:
+          - "8080:8080"
+
+
+    frontend:
+      
+      image: khaledahmed05/eventplanner_frontend:1.0
+      
+      container_name: eventplanner_frontend_container
+
+      depends_on:
+        - backend
+      
+      networks:
+        - backend_frontend_network
+
+      ports:
+        - "3000:80"
+
+
+networks:
+
+  backend_database_network: {}
+  backend_frontend_network: {} 
+
+
+volumes:
+  mongo_data_volume:
+    external: true  
+  
+
+
+

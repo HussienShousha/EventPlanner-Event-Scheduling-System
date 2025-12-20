@@ -32,3 +32,6 @@ There are a bunch of commands you should use when you download these images:
 
 - after that open any browser and write to access swagger UI: http://localhost:8080/docs
 - if you want to view frontend write that in any browser: http://localhost:3000
+- if you need to run docker-compose.yaml just use that command: sudo docker compose up -d
+- if you need to stop running containers and remove containers that are defined as services use that command: sudo docker compose down
+- after that you also use urls of backend and fron-end as always.
