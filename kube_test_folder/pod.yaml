@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+    - name: node-container
+      image: khaledahmed05/eventplanner_frontend:1.0
+        

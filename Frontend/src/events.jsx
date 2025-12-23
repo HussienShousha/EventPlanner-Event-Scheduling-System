@@ -15,7 +15,7 @@ export function CreateEvent() {
     const newEvent = { title, date, time, location, description };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/events/create", {
+      const response = await fetch("api/events/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export function ShowEvents() {
 
   const fetchEvents = async (queryField = null, queryValue = null) => {
     try {
-      let url = "http://127.0.0.1:8000/events/view";
+      let url = "api/events/view";
       if (queryField && queryValue) {
         url += `?${encodeURIComponent(queryField)}=${encodeURIComponent(queryValue)}`;
       }
@@ -142,7 +142,7 @@ export function ShowEvents() {
     const handleDelete = async (title) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/events/delete/${encodeURIComponent(title)}`,
+        `api/events/delete/${encodeURIComponent(title)}`,
         {
           method: "DELETE",
           headers: {
@@ -244,7 +244,7 @@ export function ShowInvitations() {
     const fetchInvitations = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/events/invitations/${role}`,
+          `api/events/invitations/${role}`,
           {
             method: "GET",
             headers: {
@@ -287,7 +287,7 @@ export function ShowInvitations() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/events/invitation/${eventTitle}/${role}/${status}`,
+        `api/events/invitation/${eventTitle}/${role}/${status}`,
         {
           method: "PUT",
           headers: {
@@ -392,7 +392,7 @@ export function InviteUser() {
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/events/invite/${role}`, {
+      const response = await fetch(`api/events/invite/${role}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -500,7 +500,7 @@ export function ShowInvitedUser() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/events/invited/${eventTitle}`,
+        `api/events/invited/${eventTitle}`,
         {
           method: "GET",
           headers: {

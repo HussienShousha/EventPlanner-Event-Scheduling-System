@@ -1,10 +1,11 @@
+
 There are Dockerfiles in this repository for the Backend, Database, and Frontend, each located inside its respective folder. However, there are already built Docker images available for the Backend, Database, and Frontend:
 
 Backend image: https://hub.docker.com/r/hussienshousha/eventplanner_backend 
 
 Database image: https://hub.docker.com/r/hussienshousha/eventplanner_database
 
-Frontend image: https://hub.docker.com/r/khaledahmed05/eventplanner_frontend
+Frontend image: https://hub.docker.com/r/hussienshousha/frontend
 
 
 There are a bunch of commands you should use when you download these images:
@@ -13,7 +14,7 @@ There are a bunch of commands you should use when you download these images:
 
 - Pull from docker backend image: sudo docker pull hussienshousha/eventplanner_backend:1.0
 
-- Pull from docker frontend image: sudo docker pull khaledahmed05/eventplanner_frontend:1.0
+- Pull from docker frontend image: sudo docker pull hussienshousha/frontend:4.0
 
 - Create custom network between backend and database: sudo docker network create backend_database_network
 
@@ -27,11 +28,11 @@ There are a bunch of commands you should use when you download these images:
 
 - Connect backend to frontend network: sudo docker network connect backend_frontend_network eventplanner_backend_container
 
-- Run Frontend Container: sudo docker run -d --name eventplanner_frontend_container -p 3000:80 --network backend_frontend_network khaledahmed05/eventplanner_frontend:1.0
+- Run Frontend Container: sudo docker run -d --name eventplanner_frontend_container -p 3000:80 --network backend_frontend_network hussienshousha/frontend:4.0
 
 
 - after that open any browser and write to access swagger UI: http://localhost:8080/docs
 - if you want to view frontend write that in any browser: http://localhost:3000
 - if you need to run docker-compose.yaml just use that command: sudo docker compose up -d
 - if you need to stop running containers and remove containers that are defined as services use that command: sudo docker compose down
-- after that you also use urls of backend and fron-end as always.
+- after that you also use urls of backend and front-end as always.
