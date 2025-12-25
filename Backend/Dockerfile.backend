@@ -14,7 +14,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-ENV MONGO_URI=mongodb://eventplanner-database_container:27017/EventPlannerDB \
+ENV MONGO_URI=mongodb://eventplanner-database:27017/EventPlannerDB \
     SECRET_KEY=supersecretkey \
     ALGORITHM=HS256 \
     ACCESS_TOKEN_EXPIRE_MINUTES=60
