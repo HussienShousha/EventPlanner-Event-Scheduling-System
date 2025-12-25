@@ -2,6 +2,9 @@ FROM mongo:7.0
 
 ENV MONGO_INITDB_DATABASE=EventPlannerDB
 
+
+RUN mkdir -p /data/db && chmod -R 777 /data/db
+
 VOLUME ["/data/db"]
 
 EXPOSE 27017
